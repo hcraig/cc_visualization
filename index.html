@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Criterion Collection Visualization</title>
+   	<script src="https://d3js.org/d3.v4.min.js"></script>
+   	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500" rel="stylesheet">
+ 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/ScrollMagic.min.js"></script>
+    <style>
+
+	#barchart, #barchart1 {
+		margin:0%;
+		padding:0%;
+		}
+	
+	.linemarkerannotate {
+		font-family: 'Open Sans', sans-serif;
+		fill:#eeeeee;
+		font-size: 25px;
+		font-weight:400;
+	}
+	
+	.linemarkerannotate2 {
+		font-family: 'Open Sans', sans-serif;
+		color:#0d94a3;
+		font-size: 28px;
+		font-weight:400;
+		opacity:.5;
+	}
+	
+	.linemarkertitle {
+		font-family: 'Open Sans', sans-serif;
+		color:#353536;
+		font-size: 36px;
+		font-weight:400;
+		color:gray;
+	}
+
+	.change, .change_1, .change_2, .change_3, .change_4, .change_5, .change_6, .change_7, .change_8 {
+		opacity:0;
+		transition: opacity 0.8s;
+	 	-webkit-transition: opacity 0.8s;
+	}	
+	    
+ 	h1 {
+		font-family: 'Open Sans', sans-serif;
+		color:#fff;
+	}
+		
+	#yearchart {
+		margin-top:0%;
+		position: -webkit-sticky;
+  		position: sticky;
+  		top: -1px;
+	}
+
+ 	#topfilmmakers {
+		margin-top:0%;
+		position: -webkit-sticky;
+  		position: sticky;
+  		top: -1px;
+	}
+
+ 	#geography {
+		margin-top:0%;
+		position: -webkit-sticky;
+  		position: sticky;
+  		top: -1px;
+	}
+
+ 	#genderchart {
+		margin-top:0%;
+		position: -webkit-sticky;
+  		position: sticky;
+  		top: -1px;
+	}
+	
+	p {
+		font-family: 'Open Sans', sans-serif;
+		color:#fff;
+		font-weight:300;
+	}
+	
+	body {
+		background-color:#303841;
+	}
+		
+	.active {
+		opacity:1;
+	}
+
+	svg {
+		width:100%;
+		height:600px;
+		padding-left:5%;
+		padding-right:50px;		
+	}
+
+    .linemarker {
+		font-family: 'Open Sans', sans-serif;
+        fill:#fff;		
+		font-size: 30px;
+		font-weight:300;
+	}
+
+    .linemarker_new {
+		font-family: 'Open Sans', sans-serif;
+        fill:#303841;		
+		font-size: 30px;
+		font-weight:300;
+	}
+
+    h1 {
+        font-size:45px; 
+        font-weight:200; 
+        line-height:1.3;
+        margin-top:50px;
+    }
+
+    hr {
+        background-color:#eeeeee;
+    }
+
+
+    p {
+        font-size:20px; 
+        padding:5px 4px; 
+        line-height:1.5; 
+     }
+
+     p.first {
+         margin-top: 50px;
+         margin-bottom: 100px;
+     }
+
+     p.subtitle {
+        font-size:30px; 
+        padding:5px 4px; 
+        line-height:1.5;
+        font-weight:600;
+     }
+
+     p.second {
+         margin-bottom:150px;
+     }
+
+     p.third {
+         margin-bottom:250px;
+     }
+
+	</style>
+
+</head>
+
+<body>
+
+  <main role="main" class="container" >
+     <div class="row" id="firstrow">
+     <div class="col-6">
+    
+     <h1>Demographic Analysis of the Criterion Collection</h1>
+     <br>
+     <hr>
+     </div>
+     </div>
+     <div class="row">
+        <div class="col-4">
+			
+			<p class="first">What can we learn about the Criterion Collection through a demographic analysis of films in the collection?  </p>  
+        	<p class="subtitle">Production year</p>
+        	<p class="second">Films in the collection range from the early twentieth century to the present day.</p>     
+        	<p id="sec1" class="second">To determine which decades have produced the greatest number of Criterion Collection films, films were aggregated and plotted by decade. The 1960s have the most films in the collection (Kurosawa and Godard are among the filmmakers represented in the 1960s).</p>     
+        	<p id="sec2" class="third">There are over 150 films in the collection from the 1950s as well as from the 1970s. Recent decades have fewer films in the collection.</p>
+        </div>
+         <div class="col-8">
+         <div  id="yearchart">
+		</div>
+	    </div>
+	    
+       <div class="col-4">
+       <p class="subtitle">Gender breakdown</p>
+   			<p id="second" class="third">To determine the gender breakdown of filmmakers in the collection, a Python library was used to automate the process.</p>     
+        	<p class="third">The gender breakdown is predominantly male, with female filmmakers representing a small portion of all films.</p> 
+            <p id="sec3" class="third">While automated labeling is not completely accurate and has some issues, the results reflect an approximation of gender representation in the collection.</p>
+       </div>
+       <div class="col-8">
+       		<div id="genderchart">
+       		</div>
+       </div>
+       <div class="col-4">
+       	<p class="subtitle">Top filmmakers</p>
+        	<p class="second">The filmmakers with the greatest number of films in the collection are Akira Kurosawa, Ingmar Bergman, Yasujiro Ozu, and Louis Malle.</p>  
+        	<p id="sec4" class="second">Akira Kurosawa has the most films in the collection, with titles including “Roshomon” and “Ran.”</p>     
+        	<p id="sec5" class="second">Ingmar Bergman has over 20 films in the collection, including “Persona,” “The Seventh Seal,” and “Wild Strawberries.”</p>     
+        	<p id="sec6" class="third">Yasujiro Ozu has over 15 films in the collection, including “Tokyo Story,” “Good Morning,” and “Early Summer.”</p>        
+        </div>
+        <div class="col-8">
+        	<div id="topfilmmakers">
+       		</div>
+        </div>	
+       <div class="col-4" id="sec4">
+       	<p class="subtitle">Geographic representation</p>
+       	<p class="second">The geographic representation of films in the collection is weighted toward Europe, Japan, and the US.</p>     
+        	<p id="sec7" class="second">The US has the most films in the collection, followed by France, Japan, and the United Kingdom.</p>    
+        	<p id="sec8" class="second">France has over 200 films in the collection. </p>     
+        	<p id="sec9" class="second">Japan has over 150 films in the collection</p>     
+        	<p id="third" class="second">The United Kingdom, Italy, Germany, India, Canada, and Spain also have a significant number of films in the collection.</p>     
+        </div>
+        <div class="col-8">
+        	<div id="geography">
+       		</div>
+        </div>	
+  </main>
+</body>
+
+<script type="text/javascript">
+
+const years = [	
+	[343, 125, "1920s", "approximately 18 films"],  [530, 175, "1930s", "approximately 95 films"], [568, 225, "1940s", "approximately 111 films"], 	[691, 275, "1950s", "approximately 162 films"], [691, 275, 2],
+	[969, 325, "1960s", "approximately 277 films"],[969, 325, 1],  [706, 375, "1970s", "approximately 168 films"], [706, 375, 2], [604, 425, "1980s", "approximately 126 films"], [501, 475, "1990s", "approximately 83 films"],
+	[418, 525, "2000s", "approximately 49 films"], [380, 575, "2010s", "approximately 33 films"], 	
+	];
+		
+const linedata = [
+	[1045, 400, 990, 350],
+	[300, 125, 1025, 125],
+	[300, 175, 1025, 175],
+	[300, 225, 1025, 225],
+	[300, 275, 1025, 275],
+	[300, 325, 1025, 325],
+	[300, 375, 1025, 375],
+	[300, 425, 1025, 425],
+	[300, 475, 1025, 475],
+	[300, 525, 1025, 525],
+	[300, 575, 1025, 575],
+	[300,575, 300, 620],
+	[1025,575, 1025, 620],
+	[663,575, 663, 620],
+	];
+
+const svg4 = d3.select("div#yearchart")
+			 .append("svg")
+			 .attr("id", "barchart1")
+			 .attr("viewBox", "0 0 1200 800")
+  			 .attr("preserveAspectRatio", "xMinYMid")
+  		 svg4.selectAll("line")
+			 .data(linedata)
+			 .enter()
+			 .append("line")
+			 .style("stroke-linecap", "butt")	   
+			 .style("stroke-opacity", function(d) {
+			   		if (d[0] == 150 && d[2] == 851) { 
+			   			return "1";
+			   		    }
+			   		else return ".4";
+			        })
+			 .style("stroke", "gray") 
+			 .style("stroke-dasharray", function(d) {
+			   		if (d[0] == 300 && d[2] == 1025) {
+			   			return "3, 3"; 
+			   		    }
+			   	    })
+            .attr("class", function(d) {
+			   		if (d[0] == 1045)
+			   			return "change"
+			   		})
+			.style("stroke-width", "2px") 
+			.attr("x1", function(d) {
+			   		return d[0];
+			   	    })
+			.attr("y1", function(d) {
+			   		return d[1];
+			        })
+			.attr("x2", function(d) {
+			   		return d[2];
+			        })
+			.attr("y2", function(d) {
+			   		return d[3];
+			        })
+			  
+		svg4.selectAll("circle")
+			.data(years)
+			.enter()
+			.append("circle")
+			.attr("stroke", "#eeeeee")
+			.attr("stroke-width", 3)
+			.attr("cx", function(d) {
+			   		return d[0];
+			   	  })
+			.attr("cy", function(d) {
+			   		return d[1];
+			      })
+			.attr("r", 18)
+			.attr("class", function(d) {
+			   		if (d[2] == 1)
+			   			return "change"
+			   		if (d[2] == 2)
+			   			return "change_1"
+			   		})
+			.attr("fill", function(d) {
+			   		if (d[2] == 1)
+			   			return "#ff5722"
+			   		if (d[2] == 2)
+			   			return "#ff5722"
+			   		else
+			   			return "#00adb5"
+			   		})
+			   
+		
+		svg4.append("text")
+    		.attr("x", 250)
+    		.attr("y", 650)
+    		.text("0 films")
+    		.attr("class", "linemarker")
+
+     	svg4.append("text")
+    		.attr("x", 600)
+    		.attr("y", 650)
+    		.text("150 films")
+    		.attr("class", "linemarker")
+    			
+    	svg4.append("text")
+    		.attr("x", 960)
+    		.attr("y", 650)
+    		.text("300 films")
+    		.attr("class", "linemarker")
+    			
+    	svg4.append("text")
+    		.attr("x", 200)
+    		.attr("y", 130)
+    		.text("1920s")
+    		.attr("class", "linemarker")
+    			
+    	svg4.append("text")
+    		.attr("x", 200)
+    		.attr("y", 180)
+    		.text("1930s")
+    		.attr("class", "linemarker")
+    			
+    	svg4.append("text")
+    		.attr("x", 200)
+    		.attr("y", 230)
+    		.text("1940s")
+    		.attr("class", "linemarker")
+    			
+    	svg4.append("text")
+    		.attr("x", 200)
+    		.attr("y", 280)
+    		.text("1950s")
+    		.attr("class", "linemarker")
+    			
+    	svg4.append("text")
+    		.attr("x", 200)
+    		.attr("y", 330)
+    		.text("1960s")
+    		.attr("class", "linemarker")
+
+		svg4.append("text")
+    		.attr("x", 200)
+    		.attr("y", 380)
+    		.text("1970s")
+    		.attr("class", "linemarker")
+    			
+    	svg4.append("text")
+    		.attr("x", 200)
+    		.attr("y", 430)
+    		.text("1980s")
+    		.attr("class", "linemarker")
+    			
+    	svg4.append("text")
+    		.attr("x", 200)
+    		.attr("y", 480)
+    		.text("1990s")
+    		.attr("class", "linemarker")
+    			
+        svg4.append("text")
+    		.attr("x", 200)
+    		.attr("y", 530)
+    		.text("2000s")
+    		.attr("class", "linemarker")
+    			
+    	svg4.append("text")
+    		.attr("x", 200)
+    		.attr("y", 580)
+    		.text("2010s")
+    		.attr("class", "linemarker")
+    			
+    	svg4.append("text")
+    		.attr("x", 1020)
+    		.attr("y", 430)
+    		.text("1960s")
+    		.attr("class", "linemarkerannotate change")
+    			
+    	svg4.append("text")
+    		.attr("x", 1020)
+    		.attr("y", 470)
+    		.text("Over 250 films")
+    		.attr("class", "linemarkerannotate change")
+    			
+    	svg4.append("text")
+    		.attr("x", 770)
+    		.attr("y", 470)
+    		.text("1970s")
+    		.attr("class", "linemarkerannotate change_1")
+    			
+    	svg4.append("text")
+    		.attr("x", 770)
+    		.attr("y", 510)
+    		.text("Over 150 films")
+    		.attr("class", "linemarkerannotate change_1")
+    			
+    	svg4.append("line")
+    		.attr("x1", 800)
+    		.attr("y1", 440)
+    		.attr("x2", 735)
+    		.attr("y2", 390)
+    		.style("stroke", "gray")
+    		.attr("class", "change_1")
+    			
+    	svg4.append("text")
+    		.attr("x", 730)
+    		.attr("y", 150)
+    		.text("1950s")
+    		.attr("class", "linemarkerannotate change_1")
+    			
+    	svg4.append("text")
+    		.attr("x", 730)
+    		.attr("y", 190)
+    		.text("Over 150 films")
+    		.attr("class", "linemarkerannotate change_1")
+    			
+    	svg4.append("line")
+    		.attr("x1", 760)
+    		.attr("y1", 200)
+    		.attr("x2", 715)
+    		.attr("y2", 255)
+    		.style("stroke", "gray")
+    		.attr("class", "change_1")
+
+const linedatagender = [
+	[300, 125, 1025, 125],
+	[300, 175, 1025, 175],
+	[300, 225, 1025, 225],
+	[300, 275, 1025, 275],
+	[300, 325, 1025, 325],
+	[300, 375, 1025, 375],
+	[300, 425, 1025, 425],
+	[300, 475, 1025, 475],
+	[300, 525, 1025, 525],
+	[300, 575, 1025, 575],
+	[300,575, 300, 620],
+	[1025,575, 1025, 620],
+	[663,575, 663, 620],
+	];
+
+const genderdata = [	
+	[1025, 250, 1025, 550], 
+	[662, 250, 662, 550], 			
+	[324, 320, 300, 320, "Female filmmakers"],  [1001, 440, 300, 440, "Male filmmakers"],
+	[300, 250, 300, 550], 
+	];
+		
+const svg2 = d3.select("div#genderchart")
+			 .append("svg")
+			 .attr("id", "barchart")
+			 .attr("viewBox", "0 0 1200 650")
+  			 .attr("preserveAspectRatio", "xMinYMid")
+		 svg2.selectAll("line")
+			 .data(genderdata)
+			 .enter()
+			 .append("line")
+			 .style("stroke-linecap", "butt")	   
+			 .style("stroke-opacity", function(d) {
+			   		if (d[0] == 150 && d[2] == 851) { 
+			   			return "1";
+			   		}
+			   		else return "1";
+			        })
+			 .style("stroke", function(d) {
+			   		if (d[0] == 150 && d[2] == 851) { 
+			   			return "gray";
+			   			}
+			   		if (d[1] == 250 && d[3] == 550) {
+			   			return "gray";
+			   			}
+			   			
+			   		if (d[1] == 330 && d[3] == 400) {
+			   			return "black";
+			   		}
+			   		if (d[1] == 350 && d[3] == 370) {
+			   			return "gray";
+			   		}
+			   		if (d[0] == 1001) {
+			   			return "#ff5722";
+			   			}
+			   		if (d[0] < 10) {
+			   			return "#00adb5"
+			   			}
+			   		else return "#084c61";	
+			    })
+			 .style("stroke-dasharray", function(d) {
+			   		if (d[1] == 250 && d[3] == 550) {
+			   			return "3,3";
+			   		}
+			   		if (d[1] == 330 && d[3] == 400) {
+			   			return "3,3";
+			   		}
+			        })
+			 .style("stroke-width", function(d) {
+			   		if (d[0] == 150 && d[2] == 851) { 
+			   			return "4px";
+			   			}
+			   		if (d[1] == 250 && d[3] == 550) {
+			   			return "1px";
+			   			}
+			   		if (d[1] == 350 && d[3] == 370) {
+			   			return "1px";
+			   		}
+			   		if (d[1] == 330 && d[3] == 400) {
+			   			return "2px";
+			   		}
+			   		else return "100px";		
+			        })
+			 .attr("class", function(d) {
+			   		if (d[1] == 330 && d[3] == 400)
+			   			return "change"
+			   		if (d[0] == 969)
+			   			return "test22"
+			   		})  
+			 .attr("x1", function(d) {
+			   		return d[0];
+			   	    })
+			 .attr("y1", function(d) {
+			   		return d[1];
+			        })
+			 .attr("x2", function(d) {
+			   		return d[2];
+			        })
+			 .attr("y2", function(d) {
+			   		return d[3];
+			        })    
+			 .on("mouseover", function(d) {
+					d3.select(this).style("stroke", "gray");
+				    })  
+			 .on("mouseout", function(d) {
+			    	if (d[0] == 1001) {
+					    d3.select(this).style("stroke", "#d34410");
+					}
+					if (d[0] == 324) {
+					    d3.select(this).style("stroke", "#084c61");
+					    }
+				    })
+
+		svg2.append("text")
+    		.attr("x", 44)
+    		.attr("y", 330)
+    		.text("Female filmmakers")
+    		.attr("class", "linemarker")
+    			
+    	svg2.append("text")
+    		.attr("x", 75)
+    		.attr("y", 445)
+    		.text("Male filmmakers")
+    		.attr("class", "linemarker")
+    			
+ 		svg2.append("text")
+    		.attr("x", 250)
+    		.attr("y", 580)
+    		.text("0 films")
+    		.attr("class", "linemarker")
+
+     	svg2.append("text")
+    		.attr("x", 600)
+    		.attr("y", 580)
+    		.text("560 films")
+    		.attr("class", "linemarker")
+    			
+    	svg2.append("text")
+    		.attr("x", 960)
+    		.attr("y", 580)
+    		.text("1120 films")
+    		.attr("class", "linemarker")
+    			
+    	svg2.append("text")
+    		.attr("x", 540)
+    		.attr("y", 180)
+    		.text("Approximately 30X more films by male filmmakers")
+    		.attr("class", "linemarker change_2")
+    			
+    	svg2.append("text")
+    		.attr("x", 540)
+    		.attr("y", 220)
+    		.text("than female filmmakers in the collection")
+    		.attr("class", "linemarker change_2")
+
+		svg2.append("text")
+    		.attr("x", 600)
+    		.attr("y", 260)
+    		.text("")
+    		.attr("class", "linemarker change_2")
+
+		svg2.append("line")
+    		.attr("x1", 700)
+    		.attr("y1", 230)
+    		.attr("x2", 600)
+    		.attr("y2", 380)
+    		.style("stroke", "gray")
+    		.attr("class", "change_2")
+    			
+    	svg2.append("line")
+    		.attr("x1", 700)
+    		.attr("y1", 230)
+    		.attr("x2", 350)
+    		.attr("y2", 320)
+    		.style("stroke", "gray")
+    		.attr("class", "change_2")
+
+const linedata2 = [
+	[300, 125, 1025, 125],
+	[300, 175, 1025, 175],
+	[300, 225, 1025, 225],
+	[300, 275, 1025, 275],
+	[300, 325, 1025, 325],
+	[300, 375, 1025, 375],
+	[300, 425, 1025, 425],
+	[300, 475, 1025, 475],
+	[300, 525, 1025, 525],
+	[300, 575, 1025, 575],
+	[300,575, 300, 620],
+	[1025,575, 1025, 620],
+	[663,575, 663, 620],
+	];
+
+const svg6 = d3.select("div#topfilmmakers")
+			   .append("svg")
+			   .attr("id", "barchart")
+			   .attr("viewBox", "0 0 1200 780")
+  			   .attr("preserveAspectRatio", "xMinYMid")			
+  		   svg6.append("rect")
+			   .attr("x", 300)
+			   .attr("y", 200)
+			   .attr("width", 600)
+			   .attr("height", 635)
+			   .attr("color", "white")
+			   .attr("stroke-width", 1)
+			   .attr("stroke-opacity", .5)
+			   .attr("fill", "white")
+			   .attr("stroke", "gray")
+			
+		   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 260)
+    		   .text("Top Represented Filmmakers")
+    		   .attr("class", "linemarkertitle")
+    
+		   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 330)
+    		   .text("1.")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 380)
+    		   .text("2.")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 430)
+    		   .text("3.")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 480)
+    		   .text("4.")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 530)
+    		   .text("5.")
+    		   .attr("class", "linemarker_new")
+
+		   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 580)
+    		   .text("6.")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 630)
+    		   .text("7.")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 680)
+    		   .text("8.")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 730)
+    		   .text("9.")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 360)
+    		   .attr("y", 780)
+    		   .text("10.")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 450)
+    		   .attr("y", 330)
+    		   .text("Akira Kurosawa")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 450)
+    		   .attr("y", 380)
+    		   .text("Ingmar Bergman")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 450)
+    		   .attr("y", 430)
+    		   .text("Yasujiro Ozu")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 450)
+    		   .attr("y", 480)
+    		   .text("Louis Malle")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 450)
+    		   .attr("y", 530)
+    		   .text("Roberto Rossellini")
+    		   .attr("class", "linemarker_new")
+
+		   svg6.append("text")
+    		   .attr("x", 450)
+    		   .attr("y", 580)
+    		   .text("James Ivory")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 450)
+    		   .attr("y", 630)
+    		   .text("Rainer Werner Fassbinder")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 450)
+    		   .attr("y", 680)
+    		   .text("Jean-Luc Godard")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 450)
+    		   .attr("y", 730)
+    		   .text("Jean Renoir ")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 446)
+    		   .attr("y", 780)
+    		   .text("Satyajit Ray")
+    		   .attr("class", "linemarker_new")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 700)
+    		   .attr("y", 330)
+    		   .text("Over 25 films")
+    		   .style('fill', '#d34410')
+    		   .attr("class", "linemarkerannotate2 change_3")
+    			
+    	   svg6.append("text")
+    		   .attr("x", 700)
+    		   .attr("y", 380)
+    		   .text("Over 20 films")
+    		   .style('fill', '#d34410')
+    		   .attr("class", "linemarkerannotate2 change_4")
+
+		   svg6.append("text")
+    		   .attr("x", 700)
+    		   .attr("y", 430)
+    		   .text("Over 15 films")
+    		   .style('fill', '#d34410')
+    		   .attr("class", "linemarkerannotate2 change_5")
+
+const geodata = [
+	[329, 125, "Spain"],
+	[329, 175, "Canada"],
+	[333, 225, "India"],
+	[372, 275, "Germany"],
+	[381, 325, "Sweden"],
+	[453, 375, "Italy"],
+	[549, 425, "United Kingdom"],
+	[706, 475, "Japan"],
+	[766, 525, "France"],
+	[984, 575, "United States"],
+	[984, 575, 1],
+	[766, 525, 2],
+	[706, 475, 3],
+	];
+
+const svg5 = d3.select("div#geography")
+			   .append("svg")
+			   .attr("id", "barchart")
+			   .attr("viewBox", "0 0 1200 750")
+  			   .attr("preserveAspectRatio", "xMinYMid")
+  		   svg5.selectAll("line")
+			   .data(linedata2)
+			   .enter()
+			   .append("line")
+			   .style("stroke-linecap", "butt")	   
+			   .style("stroke-opacity", function(d) {
+			   		if (d[0] == 150 && d[2] == 851) { 
+			   			return "1";
+			   		}
+			   		else return ".4";
+			         })
+			   .style("stroke", "gray") 
+			   .style("stroke-dasharray", function(d) {
+			   		if (d[0] == 300 && d[2] == 1025) {
+			   			return "3, 3"; 
+			   		}
+			   	    })
+			   .attr("fill", function(d) {
+			   		if (d[2] == 1)
+			   			return "#d34410"
+			   		else
+			   			return "white"
+			   			})
+			   .style("stroke-width", "2px") 
+			   .attr("x1", function(d) {
+			   		return d[0];
+			   	  })
+			   .attr("y1", function(d) {
+			   		return d[1];
+			      })
+			   .attr("x2", function(d) {
+			   		return d[2];
+			      })
+			   .attr("y2", function(d) {
+			   		return d[3];
+			      })
+			
+		   svg5.selectAll("circle")
+			   .data(geodata)
+			   .enter()
+			   .append("circle")
+			   .attr("stroke", "#eeeeee")
+			   .attr("stroke-width", 3)
+			   .attr("cx", function(d) {
+			   		return d[0];
+			   	  })
+			   .attr("cy", function(d) {
+			   		return d[1];
+			      })
+			   .attr("r", 18)
+			   .attr("class", function(d) {
+			   		if (d[2] == 1)
+			   			return "change_6"
+			   		if (d[2] == 2)
+			   			return "change_7"
+			   		if (d[2] == 3)
+			   			return "change_8"
+			   		})
+			   .attr("fill", function(d) {
+			   		if (d[2] == 1)
+			   			return "#d34410"
+			   		if (d[2] == 2)
+			   			return "#d34410"
+			   		if (d[2] == 3)
+			   			return "#d34410"
+			   		else
+			   			return "#00adb5"
+			   			})
+				 
+		   svg5.append("text")
+    			.attr("x", 220)
+    			.attr("y", 130)
+    			.text("Spain")
+    			.attr("class", "linemarker")
+    			
+    	   svg5.append("text")
+    			.attr("x", 190)
+    			.attr("y", 180)
+    			.text("Canada")
+    			.attr("class", "linemarker")
+    			
+    	   svg5.append("text")
+    			.attr("x", 225)
+    			.attr("y", 230)
+    			.text("India")
+    			.attr("class", "linemarker")
+    			
+    	   svg5.append("text")
+    			.attr("x", 170)
+    			.attr("y", 280)
+    			.text("Germany")
+    			.attr("class", "linemarker")
+    			
+    	   svg5.append("text")
+    			.attr("x", 186)
+    			.attr("y", 330)
+    			.text("Sweden")
+    			.attr("class", "linemarker")
+
+		   svg5.append("text")
+    			.attr("x", 237)
+    			.attr("y", 380)
+    			.text("Italy")
+    			.attr("class", "linemarker")
+    			
+    	   svg5.append("text")
+    			.attr("x", 77)
+    			.attr("y", 430)
+    			.text("United Kingdom")
+    			.attr("class", "linemarker")
+    			
+    	   svg5.append("text")
+    			.attr("x", 220)
+    			.attr("y", 480)
+    			.text("Japan")
+    			.attr("class", "linemarker")
+    			
+    	   svg5.append("text")
+    			.attr("x", 205)
+    			.attr("y", 530)
+    			.text("France")
+    			.attr("class", "linemarker")
+    			
+    	   svg5.append("text")
+    			.attr("x", 116)
+    			.attr("y", 580)
+    			.text("United States")
+    			.attr("class", "linemarker")
+    	
+    	   svg5.append("text")
+    			.attr("x", 250)
+    			.attr("y", 650)
+    			.text("0 films")
+    			.attr("class", "linemarker")
+
+     	   svg5.append("text")
+    			.attr("x", 600)
+    			.attr("y", 650)
+    			.text("175 films")
+    			.attr("class", "linemarker")
+    			
+    	   svg5.append("text")
+    			.attr("x", 960)
+    			.attr("y", 650)
+    			.text("350 films")
+    			.attr("class", "linemarker")
+    			
+    	   svg5.append("text")
+    			.attr("x", 810)
+    			.attr("y", 730)
+    			.text("United States")
+    			.attr("class", "linemarkerannotate change_6")
+    			
+    	   svg5.append("text")
+    			.attr("x", 810)
+    			.attr("y", 770)
+    			.text("Over 300 films")
+    			.attr("class", "linemarkerannotate change_6")
+    			
+    	   svg5.append("line")
+    			.attr("x1", 890)
+    			.attr("y1", 710)
+    			.attr("x2", 970)
+    			.attr("y2", 600)
+    			.style("stroke", "gray")
+    			.attr("class", "change_6")
+    			
+    	   svg5.append("text")
+    			.attr("x", 850)
+    			.attr("y", 400)
+    			.text("France")
+    			.attr("class", "linemarkerannotate change_7")
+    			
+    	   svg5.append("text")
+    			.attr("x", 850)
+    			.attr("y", 440)
+    			.text("Over 200 films")
+    			.attr("class", "linemarkerannotate change_7")
+    			
+    	   svg5.append("line")
+    			.attr("x1", 900)
+    			.attr("y1", 450)
+    			.attr("x2", 790)
+    			.attr("y2", 515)
+    			.style("stroke", "gray")
+    			.attr("class", "change_7")
+    			
+    	   svg5.append("text")
+    			.attr("x", 650)
+    			.attr("y", 300)
+    			.text("Japan")
+    			.attr("class", "linemarkerannotate change_8")
+    			
+    	   svg5.append("text")
+    			.attr("x", 650)
+    			.attr("y", 340)
+    			.text("Over 150 films")
+    			.attr("class", "linemarkerannotate change_8")
+    			
+    	   svg5.append("line")
+    			.attr("x1", 700)
+    			.attr("y1", 350)
+    			.attr("x2", 710)
+    			.attr("y2", 448)
+    			.style("stroke", "gray")
+    			.attr("class", "change_8")
+ 
+
+var controller = new ScrollMagic.Controller({globalSceneOptions: {duration: 800}});
+				
+						new ScrollMagic.Scene({triggerElement: "#sec1"})
+										.setClassToggle(".change", "active") 
+										.addTo(controller);
+										
+						new ScrollMagic.Scene({triggerElement: "#sec2"})
+										.setClassToggle(".change_1", "active") 
+										.addTo(controller);
+										
+						new ScrollMagic.Scene({triggerElement: "#sec3"})
+										.setClassToggle(".change_2", "active") 
+										.addTo(controller);
+										
+						new ScrollMagic.Scene({triggerElement: "#sec4"})
+										.setClassToggle(".change_3", "active")
+										.addTo(controller);
+										
+						new ScrollMagic.Scene({triggerElement: "#sec5"})
+										.setClassToggle(".change_4", "active")
+										.addTo(controller);
+										
+						new ScrollMagic.Scene({triggerElement: "#sec6"})
+										.setClassToggle(".change_5", "active")
+										.addTo(controller);
+										
+							new ScrollMagic.Scene({triggerElement: "#sec7"})
+										.setClassToggle(".change_6", "active") 
+										.addTo(controller);
+										
+						new ScrollMagic.Scene({triggerElement: "#sec8"})
+										.setClassToggle(".change_7", "active")
+										.addTo(controller);
+										
+						new ScrollMagic.Scene({triggerElement: "#sec9"})
+										.setClassToggle(".change_8", "active") 
+										.addTo(controller);
+
+</script>
+</body>
+</html>
